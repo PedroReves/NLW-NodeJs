@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../lib/prisma";
+import { env } from "../env";
 
 export default async function confirmParticipant(app: FastifyInstance) {
 	app.withTypeProvider<ZodTypeProvider>().get(
@@ -26,7 +27,7 @@ export default async function confirmParticipant(app: FastifyInstance) {
 
 			if (participant.is_confirmed) {
 				return reply.redirect(
-					`https://localhost:3000/trips/${participant.trip_id}`,
+					`${env.CLIENT_BASE_URL}/trips/${participant.trip_id}`,
 				);
 			}
 
@@ -34,6 +35,10 @@ export default async function confirmParticipant(app: FastifyInstance) {
 				where: { id: participantId },
 				data: { is_confirmed: true },
 			});
+
+			return reply.redirect(
+				`${env.CLIENT_BASE_URL}/trips/${participant.trip_id}`,
+			);
 		},
 	);
 }

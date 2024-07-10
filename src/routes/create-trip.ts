@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import { prisma } from "../lib/prisma";
 import { getMailClient } from "../lib/mail";
 import { dayjs } from "../lib/dayjs";
+import { env } from "../env";
 
 export default async function createTrip(app: FastifyInstance) {
 	app.withTypeProvider<ZodTypeProvider>().post(
@@ -64,7 +65,7 @@ export default async function createTrip(app: FastifyInstance) {
 
 			const formattedStartDate = dayjs(starts_at).format("LL"); // DD -> Dias, MMMM
 			const formattedEndDate = dayjs(ends_at).format("LL"); // DD -> Dias, MMMM
-			const confirmationLink = `http://localhost:3333/trips/${trip.id}/confirmation`;
+			const confirmationLink = `${env.API_BASE_URL}/trips/${trip.id}/confirmation`;
 			const mail = await getMailClient();
 
 			const message = await mail.sendMail({
